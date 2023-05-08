@@ -1,115 +1,365 @@
-# JavaScript
+# ЛР 4. Простое веб-приложение. Работа с Api
 
-Репозиторий курса "Проектирование Сетевых Приложений"
+**Цель** данной лабораторной работы - взаимодействие с внешним Api через XMLHttpRequest. В ходе выполнения работы, вам предстоит ознакомиться с кодом реализации простого взаимодействия с внешним Api, получение данных и вывод их в интерфейс пользователя, и затем выполнить задания по варианту.
 
-[Материалы](Labs2022) курса 2022 года
+## План
 
-## Лекции
+1. Инструменты для работы
+2. Что такое XMLHttpRequest
+3. Работа с VK Api
+4. Работа с Api
+5. Api главной страницы
+6. Api страницы пользователя
 
-### Лекция 1. Введение в Web
+## 1. Инструменты для работы
 
-Основы Web: URI, Document, HTTP, HTML, CSS, Кратко JavaScript
+Для работы будем использовать инструменты из предыдущих лабораторной работы: [VS Code][vs-code] + [Live Server][vs-code-live-server].
 
-* [Презентация](/lectures/lec1.pdf)
+**Перед началом работы необходимо установить на свой компьютер [Node.js][node-install].**
 
-### Лекция 2. Основы JavaScript
+## 2. Что такое XMLHttpRequest
 
-Основы JavaScript: типы, операторы, функции, объекты, коллекции, классы, DOM
+[XMLHttpRequest][xml] (или XHR) позволяет делать HTTP-запросы к серверу из браузера без перезагрузки страницы.
+Несмотря на наличие слова "XML" в названии, с помощью XHR можно работать с любыми типами данных, а не только с XML.
+С помощью XML можно загружать/скачивать файл, отслеживать прогрусс и многое другое.
 
-* [Презентация](/lectures/lec2.pdf)
+## 3. Работа с VK Api
 
-### Лекция 3. Углубленный JavaScript
+В текущей лабораторной работе мы будем работать с [VK Api][vk-api].
+Для работы с Api необходимо получить ключ доступа. Мы будем использовать [ключ доступа сообщества][vk-api-group-key].
 
-Углубленный JavaScript: замыкания, контекст, прототипы, наследования, модули, обработка ошибок, события
+### Получение ключа доступа
 
-* [Презентация](/lectures/lec3.pdf)
+Первое с чего нужно начать - создать сообщество.
 
-### Лекция 4. Модель клиент-сервер
+* Переходим на [страницу создания сообщества][vk-api-create-group]
 
-Npm, модель клиент-сервер, HTTP, Ajax, JSON/XML, XHR, Cors
+* Выбираем любую категорию из списка
 
-### Лекция 5. Асинхронный JavaScript
+![Фото 1](./assets/photo1.png)
 
-Event Loop, промисы, async/await, fetch
+* Вводим название, тематику
 
-### Лекция 6. Бэкенд на JavaScript
+![Фото 2](./assets/photo2.png)
 
-Node.js. Бэкенд на JavaScript
+* Нажимаем "Создать сообщество"
 
-### Лекция 7. Web реального времени
+После создание сообщества нам необходимо получить ключ доступа.
 
-HTTP/2, Polling, WebSocket
+* Переходим на страницу "Управление"
 
-## Задания
+* В боковом меню выбираем "Работа с API"
 
-### Модуль 1
+![Фото 3](./assets/photo3.png)
 
-#### Лабораторная работа 1
+* Нажимаем "Создать ключ"
 
-Создание калькулятора. Верстка на HTML, CSS.
+* Выбираем все права из списка и нажимаем "Создать"
 
-* [Методические указания](/tutorials/lab1/README.md)
+Сохраняем ключ доступа, он нам пригодиться дальше для работы.
 
-#### Лабораторная работа 2
+### Решение проблемы корсов
 
-Создание калькулятора. Функции на JavaScript.
+При работе с VK Api может возникать проблема с CORS запросами. Для решения этой проблемы можно установить расширения для браузера, которые отключают CORS политики в браузере. Для Google Chrome можно использовать расширение [CORS Unblock][cors-unblock].
 
-* [Методические указания](/tutorials/lab2/README.md)
+## 4. Работа с Api
 
-#### Лабораторная работа 3
+Перед началом работы с Api разберемся с тем, как мы это будем делать в нашем проекте.
+Первое с чего стоит начать - создадим еще один слой, где будем держать все методы работы с Api.
 
-Знакомство с node, npm. Верстка интерфейса с карточками, данные через mock объекты.
+Сейчас структура проекта выглядит так
 
-* [Методические указания](/tutorials/lab3/README.md)
+```bash
+├── pages
+├── components
+├── index.html
+├── main.js
+```
 
-#### Домашнее задание
+Добавим еще один слой `modules`
 
-Работа с коллекциями, функциями, классами.
+```bash
+├── pages
+├── components
+├── modules
+├── index.html
+├── main.js
+```
 
-* [Методические указания](/tutorials/hw1/README.md)
+### Работа с константами
 
-#### Рубежный контроль 1
+При работе нам понадобяться константы, чтобы не разрбрасывать их по всему проекты создадим отдельный файл под константы.
 
-### Модуль 2
+* Создаем файл `modules/consts.js`
 
-#### Лабораторная работа 4
+```js
+export const groupId = GROUP_ID
+export const accessToken = 'ACCESS_TOKEN'
+export const version = '5.131'
+```
 
-Продолжение Лабораторной работы 3. Подключение к стороннему API (VK), Cors. Запросы XHR.
+Описание полей:
 
-* [Методические указания](/tutorials/lab4/README.md)
+* groupId - id группы, которую мы создали
+* accessToken - секретный ключ нашей группы
+* version - версия VK Api
 
-#### Лабораторная работа 5
+Теперь, если нам нужно где-то получить константы, то мы просто импортируем файл и получаем наши константы.
 
-Продолжение Лабораторной работы 4. Замена коллбеков на промисы и/или await. Запросы fetch.
+### Работа с урлами
 
-* [Методические указания](/tutorials/lab5/README.md)
+Для работы нам понадобятся урлы вк, чтобы их не объявлять сразу в коде, то сделаем отдельный файл для этого.
 
-#### Лабораторная работа 6
+* Создаем файл `modules/urls.js`
 
-Реализация собственного API на Node.js, подключение к интерфейсу.
+```js
+import {accessToken, version} from "./consts.js";
 
-* [Методические указания](/tutorials/lab6/README.md)
+class Urls {
+    constructor() {
+        this.url = 'https://api.vk.com/method'
+        this.commonInfo = `access_token=${accessToken}&v=${version}`
+    }
 
-#### Дополнительное задание
+    getUserInfo(userId) {
+        return `${this.url}/users.get?user_ids=${userId}&fields=photo_400_orig&${this.commonInfo}`
+    }
 
-Продолжение Лабораторной работы 6 - добавление уведомлений/обновлений через Polling
+    getGroupMembers(groupId) {
+        return `${this.url}/groups.getMembers?group_id=${groupId}&fields=photo_400_orig&${this.commonInfo}`
+    }
+}
 
-#### Рубежный контроль 2
+export const urls = new Urls()
+```
 
-## Требуемое ПО
+Теперь, если нам нужно получить урл, то просто импортируем файл и получаем нужный нам урл.
 
-**Образ виртуальной машины Linux [Ubuntu 20.04](https://github.com/iu5git/Standards/blob/main/Linux/Linux.md) для выполнения заданий курса**
+```js
+import {urls} from "./urls.js";
 
-1. [Node JS](https://nodejs.org)
-2. [npm](https://www.npmjs.com)
-3. [VS Code](https://code.visualstudio.com)
-4. [VS Code LiveServer](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+urls.getGroupMembers()
+```
 
-## Команда курса выражает благодарность за помощь в подготовке данного курса
+### Работа с Api
 
-1. Алехин Сергей Сергеевич
-2. Елхимова Ирина Сергеевна
-3. Шевчук Михаил Сергеевич
-4. Толпаров Натан Русланович
-5. Вивчарук Ростислав Владимирович
-6. Можаев Дмитрий Владимирович
+Мы будем работать с VK Api через XHR. Для удобства создадим класс, в котом опишем методы для работы с Api.
+
+* Создаем файл `modules/ajax.js`
+
+```js
+class Ajax {
+    post(url, callback) {
+        let xhr = new XMLHttpRequest()
+        xhr.open('POST', getUrl(url))
+        xhr.send()
+
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                const data = JSON.parse(xhr.response)
+                callback(data)
+            }
+        }
+    }
+}
+
+export const ajax = new Ajax();
+```
+
+У нас есть готовый класс, через который мы можем выполнить POST запрос. Тут уже происходит вся нужная обработка и формирование JSON объекта из данных и вызов колбека. Если нужно будет, то в будущем мы можем сюда добавить GET, PUT, DELETE запросы.
+
+```js
+import {ajax} from "./ajax.js";
+
+ajax.post()
+```
+
+## 5. Api главной страницы
+
+Переведем нашу главную страницу на работу с Api.
+Сделаем так, чтобы на главной странице выводились пользователи нашей группы.
+
+Первое с чего нужно начать - модифицировать получение данных.
+Сейчас мы рисуем карточки на основе объекта в коде.
+Нам нужно поменять на получение данных из Api и отрисовку карточек.
+
+* Изменяем функцию получения данных
+
+```js
+import {ajax} from "../../modules/ajax.js";
+import {urls} from "../../modules/urls.js";
+import {groupId} from "../../modules/consts.js";
+
+
+getData() {
+    ajax.post(urls.getGroupMembers(groupId), (data) => {
+        this.renderData(data.response.items)
+    })
+}
+```
+
+* Добавляем функцию отрисовки карточек по данным
+
+```js
+renderData(items) {
+    items.forEach((item) => {
+        const productCard = new ProductCardComponent(this.pageRoot)
+        productCard.render(item, this.clickCard.bind(this))
+    })
+}
+```
+
+* Модифицируем функцию отрисовки страницы
+
+```js
+render() {
+    this.parent.innerHTML = ''
+    const html = this.getHTML()
+    this.parent.insertAdjacentHTML('beforeend', html)
+
+    this.getData()
+}
+```
+
+Так же нужно поменять структуру компонента `ProductCardComponent` под новое Api.
+У нас теперь передаются новые поля, которые нужно учитывать.
+В нашем Api нет полей `src`, `title` и `text`, необходимо заменить их на те поля, что есть в нашем Api.
+
+```js
+getHTML(data) {
+    return (
+        `
+            <div class="card" style="width: 300px;">
+                <img class="card-img-top" src="${data.photo_400_orig}" alt="картинка">
+                <div class="card-body">
+                    <h5 class="card-title">${data.first_name} ${data.last_name}</h5>
+                    <button class="btn btn-primary" id="click-card-${data.id}" data-id="${data.id}">Нажми на меня</button>
+                </div>
+            </div>
+        `
+    )
+}
+```
+
+Теперь на главной странице у нас отображаются все пользователи нашей группы.
+Перейдем к модификации второй страницы.
+
+## 6. Api страницы пользователя
+
+Модифицируем страницу так, чтобы отображать данные пользователя, на которые нажали.
+
+* Изменяем функцию получения данных
+
+```js
+ getData() {
+    ajax.post(urls.getUserInfo(this.id), (data) => {
+        this.renderData(data.response)
+    })
+}
+```
+
+* Добавляем функцию отрисовки карточек по данным
+
+```js
+renderData(item) {
+    const product = new ProductComponent(this.pageRoot)
+    product.render(item[0])
+}
+```
+
+* Модифицируем функцию отрисовки страницы
+
+```js
+render() {
+    this.parent.innerHTML = ''
+    const html = this.getHTML()
+    this.parent.insertAdjacentHTML('beforeend', html)
+
+    const backButton = new BackButtonComponent(this.pageRoot)
+    backButton.render(this.clickBack.bind(this))
+    
+    this.getData()
+}
+```
+
+Нам нужно поменять структуру компонента `ProductComponent`, так же как мы сделалил с компонентом `ProductCardComponent`
+
+```js
+getHTML(data) {
+    return (
+        `
+            <div class="card mb-3" style="width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="${data.photo_400_orig}" class="img-fluid" alt="картинка">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">${data.first_name} ${data.last_name}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    )
+}
+```
+
+## Задание
+
+Создать двухстраничное приложение из примера по вариантам.
+Вариант состоит из 2 методов и доп фильтра на эти методы.
+
+Варианты:
+
+### 1 вариант
+
+Главная страница - [groups.getMembers](https://dev.vk.com/method/groups.getMembers).
+Получаем список пользователей группы и отображаем их.
+Необходимо сделать компонент для фильтра `sort` (см. groups.getMembers -> Параметры -> sort).
+
+Вторая страница - [users.get](https://dev.vk.com/method/users.get).
+Отображаем выбранного пользователя на первой странице.
+
+### 2 вариант
+
+Главная страница - [groups.getMembers](https://dev.vk.com/method/groups.getMembers).
+Получаем список пользователей группы и отображаем их.
+Необходимо сделать компонент для фильтра `filter` (см. groups.getMembers -> Параметры -> filter).
+
+Вторая страница - [users.get](https://dev.vk.com/method/users.get).
+Отображаем выбранного пользователя на первой странице.
+
+### 3 вариант
+
+Главная страница - [messages.getConversationMembers](https://dev.vk.com/method/messages.getConversationMembers).
+Получаем список участников беседы и отображаем их.
+У группы можно создать чат.
+Необходимо сделать несколько чатов у группы и добавить компонент для выбора `peer_id` (см. messages.getConversationMembers -> Параметры -> peer_id).
+
+Вторая страница - [users.get](https://dev.vk.com/method/users.get).
+Отображаем выбранного пользователя на первой странице.
+
+### 4 вариант
+
+Главная страница - [messages.getConversations](https://dev.vk.com/method/messages.getConversations).
+Получаем список чатов и отображаем их.
+У группы можно создать несколько чатов.
+Необходимо сделать компонент для фильтра `filter` (см. messages.getConversations -> Параметры -> filter).
+
+Вторая страница - [messages.getConversationsById](https://dev.vk.com/method/messages.getConversationsById).
+Отображаем выбранный чат на первой странице.
+
+## Полезные ссылки
+
+1. Почитать про **XMLHttpRequest** [тут][xml]
+2. Почитать про **VK Api** [тут][vk-api]
+
+[vs-code]: https://code.visualstudio.com
+[vs-code-live-server]: https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
+[node-install]: https://nodejs.org/en/download
+[xml]: https://learn.javascript.ru/xmlhttprequest
+[vk-api]: https://dev.vk.com/reference
+[vk-api-group-key]: https://dev.vk.com/api/access-token/getting-started#Ключ%20доступа%20сообщества
+[vk-api-create-group]: https://vk.com/groups?w=groups_create
+[cors-unblock]: https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino/related
