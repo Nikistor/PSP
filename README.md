@@ -1,115 +1,173 @@
-# JavaScript
+# ЛР 2. Calculator. JavaScript
 
-Репозиторий курса "Проектирование Сетевых Приложений"
+**Цель** данной лабораторной работы - знакомство с инструментами построения пользовательских интерфейсов web-сайтов: HTML, CSS, JavaScript. В ходе выполнения работы, вам предстоит продолжить реализовывать простой калькулятора,  и затем выполнить задания по варианту.
 
-[Материалы](Labs2022) курса 2022 года
+## План
 
-## Лекции
+1. Программирование логики с помощью JavaScript
+2. Доступ к HTML-элементам из JavaScript
+3. Программирование кнопок калькулятора
+4. Запуск калькулятора с помощью LiveServer
+5. Задание
 
-### Лекция 1. Введение в Web
+## 1. Программирование логики с помощью JavaScript
 
-Основы Web: URI, Document, HTTP, HTML, CSS, Кратко JavaScript
+Язык программирования JavaScript служит основным инструментом для описания логики и интерактивности веб-страниц. В данной работе с помощью Js мы будем программировать кнопки калькулятора.
 
-* [Презентация](/lectures/lec1.pdf)
+Как и CSS, js-скрипт можно задать в самом HTML-документе (вложенный скрипт), либо вынести в отдельный файл и сослаться на него в HTML-файле:
 
-### Лекция 2. Основы JavaScript
+```html
+<head> 
+  <title>калькулятор</title>
+  <link rel="stylesheet" href="style.css"> 
+  <script type="text/javascript" src="script.js"></script> 
+</head>
+```
 
-Основы JavaScript: типы, операторы, функции, объекты, коллекции, классы, DOM
+## 2. Доступ к HTML-элементам из JavaScript
 
-* [Презентация](/lectures/lec2.pdf)
+Самый распространенный путь доступа к HTML-элементам из скрипта - получение HTML-объекта по его идентификатору. Для этого существует метод `getElementById`:
 
-### Лекция 3. Углубленный JavaScript
+```html
+<body>
+	<p id="paragraph">Lorem Ipsum</p>
 
-Углубленный JavaScript: замыкания, контекст, прототипы, наследования, модули, обработка ошибок, события
+	<!--вложенный JS-скрипт-->
+	<script>
+		<!-- обращаемся к HTML-документу и ищем объект с id=paragraph -->
+		element = document.getElementById("paragraph")
 
-* [Презентация](/lectures/lec3.pdf)
+		<!-- через свойство innerHTML у полученного объекта можно изменить его содержимое-->
+		element.innerHTML = "Измененный текст параграфа";
+	</script>
+</body>
+```
 
-### Лекция 4. Модель клиент-сервер
+Также JS предоставляет и другие методы получения элементов:
 
-Npm, модель клиент-сервер, HTTP, Ajax, JSON/XML, XHR, Cors
+```jsx
+document.getElementsByTagName(name) // поиск элементов по тэгу
+document.getElementsByClassName(name) // поиск элементов определенного css класса
+```
 
-### Лекция 5. Асинхронный JavaScript
+про другие способы взаимодействия с HTML-элементами из JS можно почитать [здесь](https://www.w3schools.com/js/js_htmldom.asp).
 
-Event Loop, промисы, async/await, fetch
+## 3. Программирование кнопок калькулятора
 
-### Лекция 6. Бэкенд на JavaScript
+```python
+// файл script.js
+window.onload = function(){ 
 
-Node.js. Бэкенд на JavaScript
+let a = ''
+let b = ''
+let expressionResult = ''
+let selectedOperation = null
 
-### Лекция 7. Web реального времени
+// окно вывода результата
+outputElement = document.getElementById("result")
 
-HTTP/2, Polling, WebSocket
+// список объектов кнопок циферблата (id которых начинается с btn_digit_)
+digitButtons = document.querySelectorAll('[id ^= "btn_digit_"]')
 
-## Задания
+function onDigitButtonClicked(digit) {
+    if (!selectedOperation) {
+        if ((digit != '.') || (digit == '.' && !a.includes(digit))) { 
+            a += digit
+        }
+        outputElement.innerHTML = a
+    } else {
+        if ((digit != '.') || (digit == '.' && !b.includes(digit))) { 
+            b += digit
+            outputElement.innerHTML = b        
+        }
+    }
+}
 
-### Модуль 1
+// устанавка колбек-функций на кнопки циферблата по событию нажатия
+digitButtons.forEach(button => {
+    button.onclick = function() {
+        const digitValue = button.innerHTML
+        onDigitButtonClicked(digitValue)
+    }
+});
 
-#### Лабораторная работа 1
+// установка колбек-функций для кнопок операций
+document.getElementById("btn_op_mult").onclick = function() { 
+    if (a === '') return
+    selectedOperation = 'x'
+}
+document.getElementById("btn_op_plus").onclick = function() { 
+    if (a === '') return
+    selectedOperation = '+'
+}
+document.getElementById("btn_op_minus").onclick = function() { 
+    if (a === '') return
+    selectedOperation = '-'
+}
+document.getElementById("btn_op_div").onclick = function() { 
+    if (a === '') return
+    selectedOperation = '/'
+}
 
-Создание калькулятора. Верстка на HTML, CSS.
+// кнопка очищения
+document.getElementById("btn_op_clear").onclick = function() { 
+    a = ''
+    b = ''
+    selectedOperation = ''
+    expressionResult = ''
+    outputElement.innerHTML = 0
+}
 
-* [Методические указания](/tutorials/lab1/README.md)
+// кнопка расчёта результата
+document.getElementById("btn_op_equal").onclick = function() { 
+    if (a === '' || b === '' || !selectedOperation)
+        return
+        
+    switch(selectedOperation) { 
+        case 'x':
+            expressionResult = (+a) * (+b)
+            break;
+        case '+':
+            expressionResult = (+a) + (+b)
+            break;
+        case '-':
+            expressionResult = (+a) - (+b)
+            break;
+        case '/':
+            expressionResult = (+a) / (+b)
+            break;
+    }
+    
+    a = expressionResult.toString()
+    b = ''
+    selectedOperation = null
 
-#### Лабораторная работа 2
+    outputElement.innerHTML = a
+}
+};
+```
+## 4. Запуск калькулятора с помощью LiveServer
 
-Создание калькулятора. Функции на JavaScript.
+В приложении VS Code зайдите в расширения и установите Live Server.
 
-* [Методические указания](/tutorials/lab2/README.md)
+<img width="1003" alt="Снимок экрана 2023-01-28 в 11 56 47" src="https://user-images.githubusercontent.com/55272890/215257002-85e8b177-93d8-47ef-9635-fec396f144aa.png">
 
-#### Лабораторная работа 3
+Отлично! Теперь можно запустить наш калькулятор на сервере, нажав на кнопку **Go Live** на нижней панели.
+При изменении кода в файлах страничка на сервере будет автоматически перезагружаться.
 
-Знакомство с node, npm. Верстка интерфейса с карточками, данные через mock объекты.
+## 5. Задание
 
-* [Методические указания](/tutorials/lab3/README.md)
+Вариант = (№ в списке % 3) + 1
 
-#### Домашнее задание
-
-Работа с коллекциями, функциями, классами.
-
-* [Методические указания](/tutorials/hw1/README.md)
-
-#### Рубежный контроль 1
-
-### Модуль 2
-
-#### Лабораторная работа 4
-
-Продолжение Лабораторной работы 3. Подключение к стороннему API (VK), Cors. Запросы XHR.
-
-* [Методические указания](/tutorials/lab4/README.md)
-
-#### Лабораторная работа 5
-
-Продолжение Лабораторной работы 4. Замена коллбеков на промисы и/или await. Запросы fetch.
-
-* [Методические указания](/tutorials/lab5/README.md)
-
-#### Лабораторная работа 6
-
-Реализация собственного API на Node.js, подключение к интерфейсу.
-
-* [Методические указания](/tutorials/lab6/README.md)
-
-#### Дополнительное задание
-
-Продолжение Лабораторной работы 6 - добавление уведомлений/обновлений через Polling
-
-#### Рубежный контроль 2
-
-## Требуемое ПО
-
-**Образ виртуальной машины Linux [Ubuntu 20.04](https://github.com/iu5git/Standards/blob/main/Linux/Linux.md) для выполнения заданий курса**
-
-1. [Node JS](https://nodejs.org)
-2. [npm](https://www.npmjs.com)
-3. [VS Code](https://code.visualstudio.com)
-4. [VS Code LiveServer](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
-
-## Команда курса выражает благодарность за помощь в подготовке данного курса
-
-1. Алехин Сергей Сергеевич
-2. Елхимова Ирина Сергеевна
-3. Шевчук Михаил Сергеевич
-4. Толпаров Натан Русланович
-5. Вивчарук Ростислав Владимирович
-6. Можаев Дмитрий Владимирович
+1. Запрограммируйте операцию смены знака +/-;
+2. Запрограммируйте операцию вычисления процента %;
+3. Добавьте кнопку стирания введенной цифры назад (backspace). Расположить кнопку можно, например, на месте нерабочих +/- и % кнопок;
+4. Сделайте смену цвета фона по кнопке;
+5. Запрограммируйте операцию вычисления квадратного корня √;
+6. Запрограммируйте операцию возведения в квадрат x²;
+7. Запрограммируйте операцию вычисления факториала x!;
+8. Добавьте кнопку, которая за раз добавляет сразу три нуля (000);
+9. Запрограммируйте накапливаемое сложние;
+10. Запрограммируйте накапливаемое вычитание;
+11. Сделайте смену цвета окна вывода результата по кнопке;
+12. 
