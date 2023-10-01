@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>Калькулятор</title>
+   	<!-- указываем, что файл style.css содержит таблицу стилей (stylesheet) -->
+   <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<!-- div - это базовый html-контейнер, который может содержать в себе другие html-элементы. -->
+   <div class="body_theme_calculate">
+        <!-- блок с экраном калькулятора, где будет выводиться результат вычислений. -->
+        <div class="input">0</div>
+	        <!-- блок с кнопками калькулятора. -->
+            <div>
+                <!--горизонтальный ряд из четырех кнопок-->
+                <!--<div>
+                    <button class="my-btn secondary" onclick="f('sin')">sin</button>
+                    <button class="my-btn secondary" onclick="f('cos')">cos</button>
+                    <button class="my-btn secondary" onclick="f('tan')">tan</button>
+                    <button class="my-btn secondary" onclick="f('ctg')">ctg</button>
+                </div>
+                <div>
+                    <button class="my-btn secondary type">deg</button>
+                    <button class="my-btn secondary" onclick="constant('pi')">&prod;</button>
+                    <button class="my-btn secondary" onclick="constant('e')">e</button>
+                    <button class="my-btn secondary" onclick="operation('^')">x^y</button>
+                </div>
+                <div>
+                    <button class="my-btn secondary" onclick="log('lg')">lg</button>
+                    <button class="my-btn secondary" onclick="log('ln')">ln</button>
+                    <button class="my-btn secondary" onclick="insert('(')">(</button>
+                    <button class="my-btn secondary" onclick="insert(')')">)</button>
+                </div>
+                <div>
+                    <button class="my-btn secondary" onclick="operation('sqr')">x^2</button>
+                    <button class="my-btn secondary" onclick="operation('^-1')">x^-1</button>
+                    <button class="my-btn secondary" onclick="operation('sqrt')">&radic;x</button>
+                    <button class="my-btn secondary" onclick="fact()">x!</button>
+                </div> -->
+                <div>
+                    <button class="my-btn secondary" onclick="clean()">C</button>
+                    <button class="my-btn secondary" onclick="back()">&lArr;</button>
+                    <button class="my-btn secondary" onclick="percent()">%</button>
+                    <button class="my-btn primary" onclick="insert('/')">&divide;</button>
+                </div>
+                <div>
+                    <button class="my-btn" onclick="insert('7')">7</button>
+                    <button class="my-btn" onclick="insert('8')">8</button>
+                    <button class="my-btn" onclick="insert('9')">9</button>
+                    <button class="my-btn primary" onclick="insert('*')">&times;</button>
+                </div>
+                <div>
+                    <button class="my-btn" onclick="insert('4')">4</button>
+                    <button class="my-btn" onclick="insert('5')">5</button>
+                    <button class="my-btn" onclick="insert('6')">6</button>
+                    <button class="my-btn primary" onclick="insert('-')">-</button>
+                </div>
+                <div>
+                    <button class="my-btn" onclick="insert('1')">1</button>
+                    <button class="my-btn" onclick="insert('2')">2</button>
+                    <button class="my-btn" onclick="insert('3')">3</button>
+                    <button class="my-btn primary" onclick="insert('+')">+</button>
+                </div>
+                <div>
+                    <button class="my-btn zero" onclick="insert('0')">0</button>
+                    <button class="my-btn" onclick="insert('.')">,</button>
+                    <button class="my-btn primary execute" onclick="equal()">=</button>
+                </div>
+            </div>
+   </div>
+   <script src="main.js"></script>
+</body>
+</html>
