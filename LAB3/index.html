@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple App</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="milk2.jpg" class="d-block w-100" alt="молоко">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Молоко</h5>
+            <p>Состав на 100 г продукта Энергетическая ценность: 60 ккал  Вода: 88 г Белки: 3,2 г  Жиры: 3,25 г Углеводы: 5,2 г</p>
+          </div>
+        </div>
+      <div class="carousel-item">
+        <img src="myaso2.jpg" class="d-block w-100" alt="мясо">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Мясо</h5>
+            <p>Состав на 100 г продукта Энергетическая ценность: 218 ккал  Вода: 60,1 г Белки: 18,6 г  Жиры: 16,0 г Углеводы: 0 г</p>
+          </div>
+        </div>
+      <div class="carousel-item">
+        <img src="ryby2.jpg" class="d-block w-100" alt="рыба">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Рыбы</h5>
+            <p>Состав на 100 г продукта Энергетическая ценность: 148 ккал  Вода: 71,42 г Белки: 20,77 г  Жиры: 6,61 г Углеводы: 0 г</p>
+          </div>  
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"  data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Предыдущий</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"  data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Следующий</span>
+    </button>
+</div>
+
+<div id="root"></div>
+<script src="main.js" type="module"></script>
+
+<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
