@@ -1,0 +1,22 @@
+body {
+    background-color: url('/Project/grass.jpg');
+}
+
+.d-flex.flex-wrap {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card-img-top {
+    height: 100%; 
+    width: 100%; 
+    overflow: hidden;
+}
+
+.card-body {
+    position: relative;
+    /* align-items: center; */
+    justify-content: center;
+    height: 300px;
+}
